@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puffin", "Puffin\Puffin.vcxproj", "{941C7906-373B-4901-BA10-8D4B30271126}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Sandbox\Sandbox.vcxproj", "{1EA10889-D5C7-431E-8517-E52092E3C985}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{941C7906-373B-4901-BA10-8D4B30271126}.Debug|x64.ActiveCfg = Debug|x64
+		{941C7906-373B-4901-BA10-8D4B30271126}.Debug|x64.Build.0 = Debug|x64
+		{941C7906-373B-4901-BA10-8D4B30271126}.Release|x64.ActiveCfg = Release|x64
+		{941C7906-373B-4901-BA10-8D4B30271126}.Release|x64.Build.0 = Release|x64
+		{1EA10889-D5C7-431E-8517-E52092E3C985}.Debug|x64.ActiveCfg = Debug|x64
+		{1EA10889-D5C7-431E-8517-E52092E3C985}.Debug|x64.Build.0 = Debug|x64
+		{1EA10889-D5C7-431E-8517-E52092E3C985}.Release|x64.ActiveCfg = Release|x64
+		{1EA10889-D5C7-431E-8517-E52092E3C985}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0EFD2045-33A2-49E3-901B-D8CB23DE132D}
+	EndGlobalSection
+EndGlobal
