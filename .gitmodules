@@ -1,0 +1,3 @@
+[submodule "Puffin/vendor/spdlog"]
+	path = Puffin/vendor/spdlog
+	url = https://github.com/gabime/spdlog
