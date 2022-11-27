@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Platforms">
+      <UniqueIdentifier>{DDACA145-4917-56BC-9255-0762FEFE3311}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Puffin">
       <UniqueIdentifier>{8D98FACA-793A-25A1-62F5-38F54E36ACF1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Puffin\Events">
+      <UniqueIdentifier>{D183D76F-3D44-53A6-067F-9C2372FE9782}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Platforms\WindowsWindow.h">
+      <Filter>Platforms</Filter>
+    </ClInclude>
     <ClInclude Include="src\Puffin.h" />
     <ClInclude Include="src\Puffin\Application.h">
       <Filter>Puffin</Filter>
@@ -16,16 +25,37 @@
     <ClInclude Include="src\Puffin\EntryPoint.h">
       <Filter>Puffin</Filter>
     </ClInclude>
+    <ClInclude Include="src\Puffin\Events\AppEvent.h">
+      <Filter>Puffin\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Puffin\Events\Event.h">
+      <Filter>Puffin\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Puffin\Events\KeyEvent.h">
+      <Filter>Puffin\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Puffin\Events\MouseEvent.h">
+      <Filter>Puffin\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Puffin\Events\WindowEvent.h">
+      <Filter>Puffin\Events</Filter>
+    </ClInclude>
     <ClInclude Include="src\Puffin\Log.h">
       <Filter>Puffin</Filter>
     </ClInclude>
+    <ClInclude Include="src\Window.h" />
+    <ClInclude Include="src\pfpch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Platforms\WindowsWindow.cpp">
+      <Filter>Platforms</Filter>
+    </ClCompile>
     <ClCompile Include="src\Puffin\Application.cpp">
       <Filter>Puffin</Filter>
     </ClCompile>
     <ClCompile Include="src\Puffin\Log.cpp">
       <Filter>Puffin</Filter>
     </ClCompile>
+    <ClCompile Include="src\pfpch.cpp" />
   </ItemGroup>
 </Project>

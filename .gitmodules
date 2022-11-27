@@ -1,3 +1,6 @@
 [submodule "Puffin/vendor/spdlog"]
 	path = Puffin/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Puffin/vendor/GLFW"]
+	path = Puffin/vendor/GLFW
+	url = https://github.com/glfw/glfw

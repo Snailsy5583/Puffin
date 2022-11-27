@@ -11,6 +11,11 @@ workspace "Puffin"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+IncludeDirs = {}
+IncludeDirs["GLFW"] = "Puffin/vendor/GLFW/include"
+
+include "Puffin/vendor/GLFW"
+
 project "Puffin"
 	location "Puffin"
 	kind "SharedLib"
@@ -18,6 +23,9 @@ project "Puffin"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	pchheader "pfpch.h"
+	pchsource "%{prj.name}/src/pfpch.cpp"
 
 	files
 	{
@@ -27,7 +35,15 @@ project "Puffin"
 
 	includedirs
 	{
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/src",
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDirs.GLFW}"
+	}
+
+	links
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"
