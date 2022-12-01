@@ -18,7 +18,7 @@ namespace Puffin
 		virtual std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseMoved: (" << m_MouseX << ", " << m_MouseY << ")" << std::endl;
+			ss << "MouseMoved: (" << m_MouseX << ", " << m_MouseY << ")";
 			return ss.str();
 		}
 
@@ -42,7 +42,7 @@ namespace Puffin
 		virtual std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseScrolled: " << m_Amount << std::endl;
+			ss << "MouseScrolled: " << m_Amount;
 			return ss.str();
 		}
 
@@ -76,7 +76,7 @@ namespace Puffin
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonPressed: " << m_Button << std::endl;
+			ss << "MouseButtonPressed: " << m_Button;
 			return ss.str();
 		}
 
@@ -93,7 +93,7 @@ namespace Puffin
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonReleased: " << m_Button << std::endl;
+			ss << "MouseButtonReleased: " << m_Button;
 			return ss.str();
 		}
 

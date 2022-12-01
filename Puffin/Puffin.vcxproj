@@ -162,6 +162,8 @@
     <ClInclude Include="src\Puffin\Events\KeyEvent.h" />
     <ClInclude Include="src\Puffin\Events\MouseEvent.h" />
     <ClInclude Include="src\Puffin\Events\WindowEvent.h" />
+    <ClInclude Include="src\Puffin\Layer.h" />
+    <ClInclude Include="src\Puffin\LayerStack.h" />
     <ClInclude Include="src\Puffin\Log.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\pfpch.h" />
@@ -169,6 +171,8 @@
   <ItemGroup>
     <ClCompile Include="src\Platforms\WindowsWindow.cpp" />
     <ClCompile Include="src\Puffin\Application.cpp" />
+    <ClCompile Include="src\Puffin\Layer.cpp" />
+    <ClCompile Include="src\Puffin\LayerStack.cpp" />
     <ClCompile Include="src\Puffin\Log.cpp" />
     <ClCompile Include="src\pfpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

@@ -33,7 +33,7 @@ namespace Puffin
 		virtual std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "Key " << m_KeyCode << (m_IsRepeat ? " is repeated." : " is pressed.") << std::endl;
+			ss << "Key " << m_KeyCode << (m_IsRepeat ? " is repeated." : " is pressed.");
 			return ss.str();
 		}
 	protected:

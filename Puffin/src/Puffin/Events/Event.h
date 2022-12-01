@@ -48,8 +48,11 @@ namespace Puffin
 		{
 			return GetCategories() & category;
 		}
+
+		inline bool GetHandled() const { return m_Handled; }
+		inline void SetHandled(bool value) { m_Handled = value; }
 	protected:
-		bool m_Dispatched = false;
+		bool m_Handled = false;
 	};
 
 	class PUFFIN_API EventDispatcher
@@ -66,7 +69,7 @@ namespace Puffin
 		{
 			if (m_Event.GetEventType() == T::GetStaticType())
 			{
-				m_Event.m_Dispatched = func(*(T*)&m_Event);
+				m_Event.m_Handled = func(*(T*)&m_Event);
 				return true;
 			}
 			return false;

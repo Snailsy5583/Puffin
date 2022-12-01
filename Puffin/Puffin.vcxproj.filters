@@ -45,6 +45,8 @@
     </ClInclude>
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\pfpch.h" />
+    <ClInclude Include="src\Puffin\Layer.h" />
+    <ClInclude Include="src\Puffin\LayerStack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platforms\WindowsWindow.cpp">
@@ -57,5 +59,7 @@
       <Filter>Puffin</Filter>
     </ClCompile>
     <ClCompile Include="src\pfpch.cpp" />
+    <ClCompile Include="src\Puffin\Layer.cpp" />
+    <ClCompile Include="src\Puffin\LayerStack.cpp" />
   </ItemGroup>
 </Project>
