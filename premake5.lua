@@ -13,8 +13,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDirs = {}
 IncludeDirs["GLFW"] = "Puffin/vendor/GLFW/include"
+IncludeDirs["GLAD"] = "Puffin/vendor/GLAD/include"
 
 include "Puffin/vendor/GLFW"
+include "Puffin/vendor/GLAD"
 
 project "Puffin"
 	location "Puffin"
@@ -37,12 +39,14 @@ project "Puffin"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDirs.GLFW}"
+		"%{IncludeDirs.GLFW}",
+		"%{IncludeDirs.GLAD}"
 	}
 
 	links
 	{
 		"GLFW",
+		"GLAD",
 		"opengl32.lib"
 	}
 
@@ -64,6 +68,7 @@ project "Puffin"
 
 	filter "configurations:Debug"
 		defines "PF_DEBUG"
+		defines "PF_ENABLE_ASSERTS"
 		symbols "On"
 
 	filter "configurations:Release"

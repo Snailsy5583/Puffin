@@ -12,10 +12,8 @@ namespace Puffin
 		LayerStack();
 		~LayerStack();
 
-		void Push(Layer* layer);
-		void Pop(Layer* layer);
-		void PushOverlay(Layer* layer);
-		void PopOverlay(Layer* layer);
+		void Push(Layer* layer, bool isOverlay = false);
+		void Pop(Layer* layer, bool isOverlay = false);
 
 		void OnEvent(Event& e);
 		void OnUpdate();

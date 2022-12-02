@@ -40,13 +40,17 @@
     <ClInclude Include="src\Puffin\Events\WindowEvent.h">
       <Filter>Puffin\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Puffin\Layer.h">
+      <Filter>Puffin</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Puffin\LayerStack.h">
+      <Filter>Puffin</Filter>
+    </ClInclude>
     <ClInclude Include="src\Puffin\Log.h">
       <Filter>Puffin</Filter>
     </ClInclude>
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\pfpch.h" />
-    <ClInclude Include="src\Puffin\Layer.h" />
-    <ClInclude Include="src\Puffin\LayerStack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platforms\WindowsWindow.cpp">
@@ -55,11 +59,15 @@
     <ClCompile Include="src\Puffin\Application.cpp">
       <Filter>Puffin</Filter>
     </ClCompile>
+    <ClCompile Include="src\Puffin\Layer.cpp">
+      <Filter>Puffin</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Puffin\LayerStack.cpp">
+      <Filter>Puffin</Filter>
+    </ClCompile>
     <ClCompile Include="src\Puffin\Log.cpp">
       <Filter>Puffin</Filter>
     </ClCompile>
     <ClCompile Include="src\pfpch.cpp" />
-    <ClCompile Include="src\Puffin\Layer.cpp" />
-    <ClCompile Include="src\Puffin\LayerStack.cpp" />
   </ItemGroup>
 </Project>

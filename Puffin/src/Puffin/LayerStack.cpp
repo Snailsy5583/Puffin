@@ -17,39 +17,27 @@ namespace Puffin
 		}
 	}
 
-	void LayerStack::Push(Layer* layer)
+	void LayerStack::Push(Layer* layer, bool isOverlay /*= false*/)
 	{
-		m_Stack.emplace(m_LayerInsertIndex, layer);
-		m_LayerInsertIndex++;
-
-		layer->OnAttach();
-	}
-
-	void LayerStack::PushOverlay(Layer* layer)
-	{
-		m_Stack.emplace_back(layer);
-
-		layer->OnAttach();
-	}
-
-	void LayerStack::Pop(Layer* layer)
-	{
-		auto place = std::find(m_Stack.begin(), m_Stack.end(), layer);
-		if (place != m_Stack.end())
+		if (!isOverlay)
 		{
-			m_Stack.erase(place);
-			m_LayerInsertIndex --;
-
-			layer->OnDetach();
+			m_Stack.emplace(m_LayerInsertIndex, layer);
+			m_LayerInsertIndex++;
 		}
+		else
+			m_Stack.emplace_back(layer);
+
+		layer->OnAttach();
 	}
 
-	void LayerStack::PopOverlay(Layer* layer)
+	void LayerStack::Pop(Layer* layer, bool isOverlay /*= false*/)
 	{
 		auto place = std::find(m_Stack.begin(), m_Stack.end(), layer);
 		if (place != m_Stack.end())
 		{
 			m_Stack.erase(place);
+			if (!isOverlay)
+				m_LayerInsertIndex--;
 
 			layer->OnDetach();
 		}

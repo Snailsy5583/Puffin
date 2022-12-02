@@ -15,19 +15,24 @@ namespace Puffin
 		Application();
 		virtual ~Application();
 
+		void Run();
+
 		bool OnWindowClose(WindowCloseEvent& e);
 
 		void OnEvent(Event& e);
 
-		static Application& GetApp();
+		void PushLayer(Layer* layer, bool isOverlay = false);
+		void PopLayer(Layer* layer, bool isOverlay = false);
 
-		void Run();
+
+		static Application& GetApp();
 
 		inline float GetDeltaTime() const { return m_DeltaTime; }
 	private:
 		bool m_Running = true;
-
 		float m_DeltaTime;
+
+		LayerStack m_LayerStack;
 
 		std::unique_ptr<Window> m_Window;
 

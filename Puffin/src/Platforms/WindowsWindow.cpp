@@ -1,5 +1,7 @@
 #include "pfpch.h"
 
+#include <GLAD/glad.h>
+
 #include "WindowsWindow.h"
 
 #include "Puffin/Events/AppEvent.h"
@@ -41,6 +43,9 @@ namespace Puffin
 
 		m_Window = glfwCreateWindow(m_Data.Width, m_Data.Height, m_Data.Title.c_str(), NULL, NULL);
 		glfwMakeContextCurrent(m_Window);
+        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        PF_CORE_ASSERT(status, "Failed to Initialize GLAD");
+
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 
         SetVSync(false);

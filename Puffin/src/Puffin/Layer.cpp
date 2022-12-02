@@ -11,4 +11,5 @@ namespace Puffin
 
 	Layer::~Layer()
 	{}
+
 }
