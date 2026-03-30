@@ -21,11 +21,17 @@ namespace Engine
 
 		Font RegisterFont(const char *fontSrc, unsigned int size);
 
-		float RenderCharacter(char c, Font &font, glm::vec4 color,
-							  glm::vec2 pos, float scale);
+		float RenderCharacter(char c,
+							  Font &font,
+							  glm::vec4 color,
+							  glm::vec2 pos,
+							  float scale);
 
-		void RenderText(const std::string &text, Font &font, glm::vec4 color,
-						glm::vec2 pos, float scale);
+		void RenderText(const std::string &text,
+						Font &font,
+						glm::vec4 color,
+						glm::vec2 pos,
+						float scale);
 
 	private:
 		Shader m_FontShader;

@@ -8,8 +8,8 @@
 
 using namespace Engine;
 
-Font::Font(const char *src, const FT_Library *FT, unsigned int size) :
-	m_FT(FT), m_FontSize(size), m_CharacterSet(), m_FontFace(nullptr)
+Font::Font(const char *src, const FT_Library *FT, unsigned int size)
+	: m_FT(FT), m_FontSize(size), m_CharacterSet(), m_FontFace(nullptr)
 {
 	if (FT_New_Face(*m_FT, src, 0, &m_FontFace)) {
 		std::cout << "Error initializing font face: " << src << std::endl;
@@ -27,7 +27,8 @@ Font::Font(const char *src, const FT_Library *FT, unsigned int size) :
 		}
 		// generate texture
 		Texture texture((int) m_FontFace->glyph->bitmap.width,
-						(int) m_FontFace->glyph->bitmap.rows, 1,
+						(int) m_FontFace->glyph->bitmap.rows,
+						1,
 						m_FontFace->glyph->bitmap.buffer);
 		texture.Bind();
 		// set texture options
@@ -56,6 +57,4 @@ Font::Font(const char *src, const FT_Library *FT, unsigned int size) :
 Engine::Font::~Font() {}
 
 Font::FontCharacter &Font::GetChar(const char c)
-{
-	return m_CharacterSet.at(c);
-}
+{ return m_CharacterSet.at(c); }

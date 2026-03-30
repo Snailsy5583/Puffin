@@ -7,8 +7,8 @@
 
 using namespace Engine;
 
-FontRenderer::FontRenderer(const char *vertShader, const char *fragShader) :
-	m_FontShader(Shader::Compile(vertShader, fragShader))
+FontRenderer::FontRenderer(const char *vertShader, const char *fragShader)
+	: m_FontShader(Shader::Compile(vertShader, fragShader))
 {
 	if (FT_Init_FreeType(&m_FT)) {
 		std::cout << "Error initializing freetype." << std::endl;
@@ -18,20 +18,19 @@ FontRenderer::FontRenderer(const char *vertShader, const char *fragShader) :
 FontRenderer::~FontRenderer() { FT_Done_FreeType(m_FT); }
 
 Font FontRenderer::RegisterFont(const char *fontSrc, unsigned int size)
-{
-	return {fontSrc, &m_FT, size};
-}
+{ return {fontSrc, &m_FT, size}; }
 
-float FontRenderer::RenderCharacter(char c, Font &font, glm::vec4 color,
-									glm::vec2 pos, float scale)
+float FontRenderer::RenderCharacter(char c,
+									Font &font,
+									glm::vec4 color,
+									glm::vec2 pos,
+									float scale)
 {
 	// special whitespace characters
 	Font::FontCharacter &fontChar = font.GetChar(c);
 	switch (c) {
-	case '\t':
-		return (float) (fontChar.advance >> 6) * 4 * scale;
-	default:
-		break;
+	case '\t': return (float) (fontChar.advance >> 6) * 4 * scale;
+	default: break;
 	}
 
 	glm::vec3 charPos = glm::vec3(pos.x, pos.y, 0);
@@ -49,8 +48,11 @@ float FontRenderer::RenderCharacter(char c, Font &font, glm::vec4 color,
 	return (float) (fontChar.advance >> 6) * scale;
 }
 
-void FontRenderer::RenderText(const std::string &text, Font &font,
-							  glm::vec4 color, glm::vec2 pos, float scale)
+void FontRenderer::RenderText(const std::string &text,
+							  Font &font,
+							  glm::vec4 color,
+							  glm::vec2 pos,
+							  float scale)
 {
 	glm::vec2 starting_pos = pos;
 	for (char c : text) {
