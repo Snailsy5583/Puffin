@@ -14,6 +14,7 @@ namespace Engine
 	public:
 		Shader(const char *vertShaderSource = nullptr,
 			   const char *fragShaderSource = nullptr);
+		Shader(Shader &) = delete;
 		~Shader();
 
 		static Shader Compile(const char *vertPath, const char *fragPath);

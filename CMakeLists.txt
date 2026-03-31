@@ -18,36 +18,49 @@ set(__src
         stb.cpp
         GameObject.cpp GameObject.h
         Component.h Component.cpp
-        )
+        Camera.cpp
+        Camera.h
+)
 
 set(__src__Events
         Events/Events.h
         Events/MouseEvents.h
         Events/WindowEvents.h
-        )
+)
 
 set(__src__FontRendering
-#        TextRendering/Font.h TextRendering/Font.cpp
-#        TextRendering/FontRenderer.h TextRendering/FontRenderer.cpp
+        #        TextRendering/Font.h TextRendering/Font.cpp
+        #        TextRendering/FontRenderer.h TextRendering/FontRenderer.cpp
         Events/KeyboardEvents.h)
 
-add_library(${PROJECT_NAME} ${__src} ${__src__Events} ${__src__FontRendering})
+set(__ImGui__
+        ../../vendor/imgui/imgui.h ../../vendor/imgui/imgui.cpp
+        ../../vendor/imgui/backends/imgui_impl_glfw.h
+        ../../vendor/imgui/backends/imgui_impl_glfw.cpp
+
+        ../../vendor/imgui/backends/imgui_impl_opengl3.h
+        ../../vendor/imgui/backends/imgui_impl_opengl3.cpp
+)
+
+add_library(${PROJECT_NAME}
+        #        ${__ImGui__}
+        ${__src} ${__src__Events} ${__src__FontRendering})
 
 ################################# linking ######################################
 target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
         glad
         opengl32
-#        freetype
-        )
+        #        freetype
+)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         ../../vendor/glad/glad/include
-#        ../../vendor
+        #        ../../vendor
         ../../vendor/glfw/include
-#        ../../vendor/freetype/include
+        #        ../../vendor/freetype/include
         ../../vendor/glm
         ../../vendor/imgui
         ../../vendor/stb
         ../Engine
-        )
+)

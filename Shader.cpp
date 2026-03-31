@@ -13,7 +13,8 @@ namespace Engine
 	std::vector<Shader *> Shader::p_ShaderList;
 
 	Shader::Shader(const char *vertShaderSource /*=NULL*/,
-				   const char *fragShaderSource /*=NULL*/)
+				   const char *fragShaderSource /*=NULL*/
+	)
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -38,15 +39,24 @@ namespace Engine
 
 		int success = false;
 		// check for linking errors
+		int infoLogLen;
+		glGetProgramiv(m_ShaderProgramID, GL_INFO_LOG_LENGTH, &infoLogLen);
 		glGetProgramiv(m_ShaderProgramID, GL_LINK_STATUS, &success);
 		if (!success) {
-			std::vector<char> errorLog(512);
-			glGetProgramInfoLog(m_ShaderProgramID, 512, nullptr, &errorLog[0]);
+			if (infoLogLen > 0) {
+				std::vector<char> errorLog(1024);
+				glGetProgramInfoLog(m_ShaderProgramID,
+									1024,
+									nullptr,
+									&errorLog[0]);
 
-			std::stringstream logStream;
-			for (char character : errorLog) { logStream << character; }
+				std::stringstream logStream;
+				for (char character : errorLog) { logStream << character; }
 
-			std::cout << logStream.str();
+				std::cout << logStream.str();
+			} else {
+				std::cout << "SHADER PROGRAM ERROR WITH NO INFO" << std::endl;
+			}
 		}
 
 		glDetachShader(m_ShaderProgramID, vertShaderID);
@@ -54,8 +64,9 @@ namespace Engine
 		glDeleteShader(vertShaderID);
 		glDeleteShader(fragShaderID);
 
+
+		m_ShaderIndex = p_ShaderList.size();
 		p_ShaderList.push_back(this);
-		m_ShaderIndex = p_ShaderList.size() - 1;
 	}
 
 	Shader::~Shader()
@@ -69,7 +80,7 @@ namespace Engine
 		std::string vertShaderSource = ReadFile(vertPath);
 		std::string fragShaderSource = ReadFile(fragPath);
 
-		return {vertShaderSource.c_str(), fragShaderSource.c_str()};
+		return Shader(vertShaderSource.c_str(), fragShaderSource.c_str());
 	}
 
 #pragma region SetUniformFuncs
@@ -233,7 +244,7 @@ namespace Engine
 
 			std::cout << logStream.str();
 
-			// Provide the infolog in whatever manor you deem best.
+			// Provide the info log in whatever manner you deem best.
 			// Exit with failure.
 			glDeleteShader(shader);	   // Don't leak the shader.
 		}
@@ -241,19 +252,10 @@ namespace Engine
 		return !isCompiled;
 	}
 
-	// texture
+	// Texture
 	// ////////////////////////////////////////////////////////////////////
 
-	Texture::Texture(const char *path) : m_TextureID(0) { InitFromPath(path); }
-
-	Texture::Texture(int width,
-					 int height,
-					 int channel,
-					 const unsigned char *buffer)
-		: m_TextureID(0)
-	{ InitFromBuffer(width, height, channel, buffer); }
-
-	void Texture::InitFromPath(const char *path)
+	Texture::Texture(const char *path)
 	{
 		stbi_set_flip_vertically_on_load(true);
 
@@ -283,37 +285,6 @@ namespace Engine
 		UnBind();
 
 		stbi_image_free(image);
-	}
-
-	void Texture::InitFromBuffer(int width,
-								 int height,
-								 int channel,
-								 const unsigned char *buffer)
-	{
-		glGenTextures(1, &m_TextureID);
-		Bind();
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		GLint format;
-		switch (channel) {
-		case 1: format = GL_RED; break;
-		case 3: format = GL_RGB; break;
-		default: format = GL_RGBA; break;
-		}
-		glTexImage2D(GL_TEXTURE_2D,
-					 0,
-					 format,
-					 width,
-					 height,
-					 0,
-					 format,
-					 GL_UNSIGNED_BYTE,
-					 buffer);
-		UnBind();
 	}
 
 	void Texture::Bind() const { glBindTexture(GL_TEXTURE_2D, m_TextureID); }

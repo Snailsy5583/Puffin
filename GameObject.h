@@ -9,6 +9,7 @@
 
 #include "Component.h"
 #include "Renderer.h"
+#include "glm/detail/type_quat.hpp"
 
 namespace Engine
 {
@@ -16,23 +17,24 @@ namespace Engine
 	class GameObject
 	{
 	public:
-		GameObject(RendererObject rendererObject, glm::vec3 pos, float rot);
+		virtual ~GameObject() = default;
+		GameObject(Mesh mesh, glm::vec3 pos, glm::quat rot);
 
 		void AddComponent(std::unique_ptr<Component> component);
 
-		virtual void Move(glm::vec3 deltaPos, float deltaRot);
+		virtual void Move(glm::vec3 deltaPos, glm::quat deltaRot);
 
 		virtual void Update(float deltaTime);
 
-		void Render();
+		void Render() const;
 
 		void
 		SetUpdateCallback(std::function<void(float, GameObject *)> callback);
 
 	public:
-		inline RendererObject &GetRendererObject() { return m_RendererObject; }
+		inline RenderObject &GetRenderObject() { return mesh.renderObj; }
 		inline const glm::vec3 &GetPosition() const { return m_Position; }
-		inline const float &GetRotation() const { return m_Rotation; }
+		inline const glm::quat &GetRotation() const { return m_Rotation; }
 		inline float GetScale() const { return m_Scale; }
 
 		template<class T>
@@ -46,16 +48,14 @@ namespace Engine
 		}
 
 	protected:
-		Mesh
-
-			RendererObject m_RendererObject;
+		Mesh mesh;
 
 		std::vector<std::unique_ptr<Component>> m_Components;
 
 		std::function<void(float, GameObject *)> m_UpdateCallback;
 
 		glm::vec3 m_Position;
-		float m_Rotation;
+		glm::quat m_Rotation;
 		float m_Scale = 1;
 		glm::mat4 m_TransformationMat;
 	};
@@ -63,7 +63,7 @@ namespace Engine
 	class Quad : public GameObject
 	{
 	public:
-		Quad(float sideLength, glm::vec3 pos, float rot, Shader *shader);
+		Quad(float sideLength, glm::vec3 pos, glm::quat rot, Shader *shader);
 
 		float GetSideLength() const { return m_SideLength; }
 
@@ -74,7 +74,7 @@ namespace Engine
 	class Circle : public GameObject
 	{
 	public:
-		Circle(float radius, glm::vec3 pos, float rot, Shader *shader);
+		Circle(float radius, glm::vec3 pos, glm::quat rot, Shader *shader);
 
 		float GetRadius() const { return m_Radius; }
 

@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "glad/glad.h"
+// #include "glad/glad.h"
 #include "glm/ext/vector_int2.hpp"
 
 #include "Events/Events.h"
@@ -29,7 +29,6 @@ namespace Engine
 									m_WindowTitle,
 									NULL,
 									NULL);
-		glfwSetWindowPos(m_Window, 500, 30);
 		glfwMakeContextCurrent(m_Window);
 
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -60,7 +59,6 @@ namespace Engine
 									m_WindowTitle,
 									primaryMonitor,
 									NULL);
-		glfwSetWindowPos(m_Window, 500, 30);
 		glfwMakeContextCurrent(m_Window);
 
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

@@ -1,11 +1,15 @@
 #pragma once
 
+#include "Camera.h"
 #include "Shader.h"
 #include <glm/glm.hpp>
 
+#include <iostream>
+
 namespace Engine
 {
-	struct RendererObject {
+	struct Mesh;
+	struct RenderObject {
 		unsigned int vao {};
 		unsigned int vbo {};
 		unsigned int ebo {};
@@ -13,38 +17,27 @@ namespace Engine
 		Shader *shader;	   // doesn't take ownership of shader
 	};
 
-	struct Mesh {
-		enum Usage { none = 0, Static, Dynamic, Stream };
-		Usage usage;
-
-		// vbo
-		std::vector<glm::vec3> vertices;
-		std::vector<glm::vec3> normals;
-		std::vector<glm::vec2> texCoords;
-
-		std::vector<int> indices;
-
-		RendererObject renderer_object;
-	};
-
 	class Renderer
 	{
 	public:
-		static RendererObject GenRendererObj(Mesh &mesh, Shader *shader);
+		static RenderObject GenRendererObj(const Mesh &mesh, Shader *shader);
 
 		static Mesh GenQuad(glm::vec3 pos, float sideLen, Shader *shader);
 		static Mesh GenQuad(glm::vec3 pos, glm::vec2 size, Shader *shader);
 
+		static void UpdateVertexBuffer(const Mesh &mesh);
+
 		static void
-		MoveQuad(RendererObject &obj, glm::vec3 newPos, float sideLen);
+		MoveQuad(RenderObject &obj, glm::vec3 newPos, float sideLen);
 		static void
-		MoveQuad(RendererObject &obj, glm::vec3 newPos, glm::vec2 size);
+		MoveQuad(RenderObject &obj, glm::vec3 newPos, glm::vec2 size);
 
-		static void DeleteQuad(RendererObject &object);
+		static void DeleteQuad(const RenderObject &object);
 
-		static void SubmitObject(const RendererObject &obj);
+		static void SubmitObject(const Mesh &obj);
+		static void SubmitObject(const Camera &camera, const Mesh &obj);
 
-		static float *GetVertices(RendererObject &obj);
+		static float *GetVertices(const RenderObject &obj);
 
 		// utility function
 		static inline float *hsv2rgb(float in[4])
@@ -111,8 +104,56 @@ namespace Engine
 
 	private:
 		const static float m_QuadVerts[];
-		const static int m_QuadIndices[];
+		const static unsigned int m_QuadIndices[];
 	};
 
+	struct Mesh {
+		enum Usage { none = 0, Static, Dynamic, Stream };
+		Usage usage {};
 
+		// vbo
+		std::vector<glm::vec3> vertices {};
+		std::vector<glm::vec3> normals {};
+		std::vector<glm::vec2> texCoords {};
+
+		std::vector<unsigned int> indices {};
+
+		RenderObject renderObj {};
+
+		void UpdateMesh()
+		{
+			std::cout << "updating mesh" << std::endl;
+			m_AggrVertices.clear();
+
+			constexpr int stride =
+				(sizeof(glm::vec3) + sizeof(glm::vec3) + sizeof(glm::vec2));
+
+			renderObj.bufferSize = vertices.size() * stride;
+
+			// std::cout << vertices.size() << std::endl;
+			for (int i = 0; i < vertices.size(); i++) {
+				m_AggrVertices.emplace_back(vertices[i].x);
+				m_AggrVertices.emplace_back(vertices[i].y);
+				m_AggrVertices.emplace_back(vertices[i].z);
+				m_AggrVertices.emplace_back(normals[i].x);
+				m_AggrVertices.emplace_back(normals[i].y);
+				m_AggrVertices.emplace_back(normals[i].z);
+				m_AggrVertices.emplace_back(texCoords[i].x);
+				m_AggrVertices.emplace_back(texCoords[i].y);
+
+				int rowlen = stride / sizeof(float);
+				for (int j = 0; j < stride / sizeof(float); j++)
+					std::cout << m_AggrVertices[i * rowlen + j] << ", ";
+				std::cout << std::endl;
+			}
+			std::cout << "\n\n\n";
+
+			Renderer::UpdateVertexBuffer(*this);
+		}
+
+		const float *GetAggrVertexData() const { return m_AggrVertices.data(); }
+
+	protected:
+		std::vector<float> m_AggrVertices {};
+	};
 }	 // namespace Engine
