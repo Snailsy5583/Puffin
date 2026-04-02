@@ -20,6 +20,7 @@ set(__src
         Component.h Component.cpp
         Camera.cpp
         Camera.h
+        OBJ_Loader.h
 )
 
 set(__src__Events

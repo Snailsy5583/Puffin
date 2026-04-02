@@ -3,9 +3,10 @@
 
 #include "Renderer.h"
 
+#include "OBJ_Loader.h"
+
 namespace Engine
 {
-
 
 	const float Renderer::m_QuadVerts[] = {
 		//      x,		y,	   z,	  u,	  v,
@@ -190,12 +191,14 @@ namespace Engine
 
 	void Renderer::SubmitObject(const Camera &camera, const Mesh &mesh)
 	{
-		// mesh.renderObj.shader->Bind();
-		// TODO: look into submitting a camera to render
+		mesh.renderObj.shader->Bind();
+		mesh.renderObj.shader->SetUniformMat4("view", camera.GetViewMatrix());
+		mesh.renderObj.shader->SetUniformMat4("projection",
+											  camera.GetProjectionMatrix());
 
 		SubmitObject(mesh);
 
-		// mesh.renderObj.shader->UnBind();
+		mesh.renderObj.shader->UnBind();
 	}
 
 	float *Renderer::GetVertices(const RenderObject &obj)
@@ -207,5 +210,28 @@ namespace Engine
 		glGetBufferSubData(GL_ARRAY_BUFFER, 0, obj.bufferSize, data);
 
 		return data;
+	}
+
+	Mesh Mesh::ImportFromOBJ(std::string path, Shader *shader)
+	{
+		Mesh mesh;
+		objl::Loader loader;
+		loader.LoadFile(path);
+		for (auto vert : loader.LoadedVertices) {
+			mesh.vertices.emplace_back(vert.Position.X,
+									   vert.Position.Y,
+									   vert.Position.Z);
+			mesh.texCoords.emplace_back(vert.TextureCoordinate.X,
+										vert.TextureCoordinate.Y);
+			mesh.normals.emplace_back(vert.Normal.X,
+									  vert.Normal.Y,
+									  vert.Normal.Z);
+		}
+		for (auto ind : loader.LoadedIndices) {
+			mesh.indices.emplace_back(ind);
+		}
+		mesh.renderObj = Renderer::GenRendererObj(mesh, shader);
+		mesh.UpdateMesh();
+		return mesh;
 	}
 }	 // namespace Engine

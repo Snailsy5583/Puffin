@@ -1,14 +1,13 @@
 #pragma once
 
-// #include "../Window.h"
-// #include "Engine/Window.h"
 #include <functional>
-#include <iostream>
-#include <vector>
 
 namespace Engine
 {
+#define BIND_EVENT_FUNC(func, obj) std::bind(&func, obj, std::placeholders::_1)
+
 	class Window;
+
 	enum EventType {
 		WindowClosed,
 		WindowResized,
@@ -57,7 +56,7 @@ namespace Engine
 		bool Dispatch(EventFunc<T> func)
 		{
 			if (m_Event.GetEventType() == T::GetStaticType()) {
-				m_Event.m_Handled = func(*(T *) &m_Event);
+				m_Event.m_Handled = func(*static_cast<T *>(&m_Event));
 				return m_Event.m_Handled;
 			}
 			return false;

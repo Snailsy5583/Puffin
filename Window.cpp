@@ -189,8 +189,6 @@ namespace Engine
 		glfwPollEvents();
 	}
 
-	GLFWwindow *Window::GetGLFWWindow() { return m_Window; }
-
 	bool Window::OnEvent_WindowClosed(WindowClosedEvent &e)
 	{
 		m_ShouldCloseWindow = true;

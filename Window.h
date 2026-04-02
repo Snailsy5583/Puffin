@@ -34,7 +34,7 @@ namespace Engine
 
 		void Update();
 
-		GLFWwindow *GetGLFWWindow();
+		inline GLFWwindow *GetGLFWWindow() const { return m_Window; }
 
 		inline std::string GetClipboard() const
 		{ return glfwGetClipboardString(m_Window); }

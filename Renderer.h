@@ -108,6 +108,8 @@ namespace Engine
 	};
 
 	struct Mesh {
+		static Mesh ImportFromOBJ(std::string path, Shader *shader);
+
 		enum Usage { none = 0, Static, Dynamic, Stream };
 		Usage usage {};
 

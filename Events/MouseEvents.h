@@ -81,9 +81,11 @@ namespace Engine
 	{
 	public:
 		MouseMovedEvent(const Window &window, float mouseX, float mouseY)
-			: Event(window), m_MousePosX(mouseX), m_MousePosY(mouseY)
+			: Event(window), m_MousePos(mouseX, mouseY)
 		{
 		}
+
+		~MouseMovedEvent() { m_PrevMousePos = m_MousePos; }
 
 		static EventType GetStaticType() { return EventType::MouseMoved; }
 
@@ -94,12 +96,16 @@ namespace Engine
 
 		void GetMousePosition(float &outX, float &outY)
 		{
-			outX = m_MousePosX;
-			outY = m_MousePosY;
+			outX = m_MousePos.x;
+			outY = m_MousePos.y;
 		}
 
+		glm::vec2 GetMousePosition() const { return m_MousePos; }
+		glm::vec2 GetDelta() const { return m_MousePos - m_PrevMousePos; }
+
 	private:
-		float m_MousePosX, m_MousePosY;
+		glm::vec2 m_MousePos;
+		inline static glm::vec2 m_PrevMousePos;
 	};
 
 	class MouseScrolledEvent : public Event

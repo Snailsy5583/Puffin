@@ -1,7 +1,6 @@
 #pragma once
 
 #include <chrono>
-#include <memory>
 
 #include "Events/Events.h"
 #include "Layer.h"
@@ -10,7 +9,6 @@
 namespace Engine
 {
 
-#define BIND_EVENT_FUNC(x, obj) std::bind(&x, obj, std::placeholders::_1)
 
 	class Application
 	{
@@ -30,9 +28,9 @@ namespace Engine
 		virtual bool DispatchEvents(Engine::EventDispatcher &dispatcher);
 
 	protected:
-		Engine::Window *m_MainWindow;
+		Window *m_MainWindow;
 
-		Engine::LayerStack m_LayerStack;
+		LayerStack m_LayerStack;
 
 		std::chrono::time_point<std::chrono::steady_clock> m_LastFrame;
 		float m_DeltaTime;
