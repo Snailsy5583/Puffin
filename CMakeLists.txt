@@ -34,15 +34,6 @@ set(__src__FontRendering
         #        TextRendering/FontRenderer.h TextRendering/FontRenderer.cpp
         Events/KeyboardEvents.h)
 
-set(__ImGui__
-        ../../vendor/imgui/imgui.h ../../vendor/imgui/imgui.cpp
-        ../../vendor/imgui/backends/imgui_impl_glfw.h
-        ../../vendor/imgui/backends/imgui_impl_glfw.cpp
-
-        ../../vendor/imgui/backends/imgui_impl_opengl3.h
-        ../../vendor/imgui/backends/imgui_impl_opengl3.cpp
-)
-
 add_library(${PROJECT_NAME}
         #        ${__ImGui__}
         ${__src} ${__src__Events} ${__src__FontRendering})

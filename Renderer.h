@@ -124,7 +124,6 @@ namespace Engine
 
 		void UpdateMesh()
 		{
-			std::cout << "updating mesh" << std::endl;
 			m_AggrVertices.clear();
 
 			constexpr int stride =
@@ -132,7 +131,6 @@ namespace Engine
 
 			renderObj.bufferSize = vertices.size() * stride;
 
-			// std::cout << vertices.size() << std::endl;
 			for (int i = 0; i < vertices.size(); i++) {
 				m_AggrVertices.emplace_back(vertices[i].x);
 				m_AggrVertices.emplace_back(vertices[i].y);
@@ -142,13 +140,7 @@ namespace Engine
 				m_AggrVertices.emplace_back(normals[i].z);
 				m_AggrVertices.emplace_back(texCoords[i].x);
 				m_AggrVertices.emplace_back(texCoords[i].y);
-
-				int rowlen = stride / sizeof(float);
-				for (int j = 0; j < stride / sizeof(float); j++)
-					std::cout << m_AggrVertices[i * rowlen + j] << ", ";
-				std::cout << std::endl;
 			}
-			std::cout << "\n\n\n";
 
 			Renderer::UpdateVertexBuffer(*this);
 		}
