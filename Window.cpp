@@ -1,6 +1,5 @@
 #include "Window.h"
 // #include "glad/glad.h"
-#include "glm/ext/vector_int2.hpp"
 
 #include "Events/Events.h"
 #include "Events/KeyboardEvents.h"
@@ -20,15 +19,12 @@ namespace Engine
 		m_WindowWidth = width;
 		m_WindowHeight = height;
 		m_WindowTitle = title;
-		p_OnEventFunc = func;
+		p_OnEventFunc = std::move(func);
 
 		m_ShouldCloseWindow = false;
 
-		m_Window = glfwCreateWindow(m_WindowWidth,
-									m_WindowHeight,
-									m_WindowTitle,
-									NULL,
-									NULL);
+		m_Window = glfwCreateWindow(
+			m_WindowWidth, m_WindowHeight, m_WindowTitle, nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
 
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -38,7 +34,9 @@ namespace Engine
 
 		glfwSwapInterval(0);
 
-		if (!m_Window) { std::cout << "FAILED TO CREATE WINDOW\n"; }
+		if (!m_Window) {
+			std::cout << "FAILED TO CREATE WINDOW\n";
+		}
 
 		SetWindowCallbacks();
 	}
@@ -50,7 +48,7 @@ namespace Engine
 		m_WindowWidth = mode->width;
 		m_WindowHeight = mode->height;
 		m_WindowTitle = title;
-		p_OnEventFunc = func;
+		p_OnEventFunc = std::move(func);
 
 		m_ShouldCloseWindow = false;
 
@@ -58,7 +56,7 @@ namespace Engine
 									m_WindowHeight,
 									m_WindowTitle,
 									primaryMonitor,
-									NULL);
+									nullptr);
 		glfwMakeContextCurrent(m_Window);
 
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -68,7 +66,9 @@ namespace Engine
 
 		glfwSwapInterval(0);
 
-		if (!m_Window) { std::cout << "FAILED TO CREATE WINDOW\n"; }
+		if (!m_Window) {
+			std::cout << "FAILED TO CREATE WINDOW\n";
+		}
 
 		SetWindowCallbacks();
 	}
@@ -79,25 +79,23 @@ namespace Engine
 	{
 		// initialize a buffer storing window that is used in the lambda
 		// functions
-		glfwSetWindowUserPointer(m_Window, (void *) this);
+		glfwSetWindowUserPointer(m_Window, this);
 
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow *window) {
-			Window &win = *(Window *) glfwGetWindowUserPointer(window);
+			const Window &win = *(Window *) glfwGetWindowUserPointer(window);
 			WindowClosedEvent e(win);
 			win.p_OnEventFunc(e);
 		});
 
 		glfwSetWindowSizeCallback(
-			m_Window,
-			[](GLFWwindow *window, int width, int height) {
+			m_Window, [](GLFWwindow *window, int width, int height) {
 				Window &win = *(Window *) glfwGetWindowUserPointer(window);
 				WindowResizedEvent e(win, width, height);
 				win.p_OnEventFunc(e);
 			});
 
 		glfwSetMouseButtonCallback(
-			m_Window,
-			[](GLFWwindow *window, int button, int action, int mods) {
+			m_Window, [](GLFWwindow *window, int button, int action, int) {
 				Window &win = *(Window *) glfwGetWindowUserPointer(window);
 
 				double mouseX, mouseY;
@@ -122,27 +120,24 @@ namespace Engine
 			});
 
 		glfwSetCursorPosCallback(
-			m_Window,
-			[](GLFWwindow *window, double mouseX, double mouseY) {
+			m_Window, [](GLFWwindow *window, double mouseX, double mouseY) {
 				Window &win = *(Window *) glfwGetWindowUserPointer(window);
 
 				int width, height;
 				glfwGetWindowSize(window, &width, &height);
 
-				MouseMovedEvent e(win,
-								  mouseX * 2 / width - 1,
-								  -mouseY * 2 / height + 1);
+				MouseMovedEvent e(
+					win, mouseX * 2 / width - 1, -mouseY * 2 / height + 1);
 				win.p_OnEventFunc(e);
 			});
 
-		glfwSetCharCallback(m_Window,
-							[](GLFWwindow *window, unsigned int codepoint) {
-								Window &win = *(
-									Window *) glfwGetWindowUserPointer(window);
+		glfwSetCharCallback(
+			m_Window, [](GLFWwindow *window, unsigned int codepoint) {
+				Window &win = *(Window *) glfwGetWindowUserPointer(window);
 
-								KeyboardCharTypedEvent e(win, codepoint);
-								win.p_OnEventFunc(e);
-							});
+				KeyboardCharTypedEvent e(win, codepoint);
+				win.p_OnEventFunc(e);
+			});
 
 		glfwSetKeyCallback(
 			m_Window,
@@ -174,8 +169,7 @@ namespace Engine
 			});
 
 		glfwSetScrollCallback(
-			m_Window,
-			[](GLFWwindow *window, double x, double y) {
+			m_Window, [](GLFWwindow *window, double x, double y) {
 				Window &win = *(Window *) glfwGetWindowUserPointer(window);
 
 				MouseScrolledEvent e(win, x, y);
@@ -183,13 +177,9 @@ namespace Engine
 			});
 	}
 
-	void Window::Update()
-	{
-		glfwSwapBuffers(m_Window);
-		glfwPollEvents();
-	}
+	void Window::Update() { glfwSwapBuffers(m_Window); }
 
-	bool Window::OnEvent_WindowClosed(WindowClosedEvent &e)
+	bool Window::OnEvent_WindowClosed(WindowClosedEvent &)
 	{
 		m_ShouldCloseWindow = true;
 		return true;

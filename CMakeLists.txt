@@ -20,7 +20,6 @@ set(__src
         Component.h Component.cpp
         Camera.cpp
         Camera.h
-        OBJ_Loader.h
 )
 
 set(__src__Events
@@ -54,5 +53,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
         ../../vendor/glm
         ../../vendor/imgui
         ../../vendor/stb
+        ../../vendor/OBJLoader
         ../Engine
 )

@@ -42,7 +42,7 @@ float FontRenderer::RenderCharacter(char c,
 	fontChar.texture.Bind();
 	m_FontShader.SetUniformVec("textColor", color);
 	Renderer::SubmitObject(quad);
-	fontChar.texture.UnBind();
+	fontChar.texture.Unbind();
 	Renderer::DeleteQuad(quad);
 
 	return (float) (fontChar.advance >> 6) * scale;

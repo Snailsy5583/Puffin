@@ -43,7 +43,7 @@ namespace Engine
 
 		void Bind() const;
 
-		void UnBind() const;
+		void Unbind() const;
 
 		void AttachTexture(Texture tex);
 
@@ -76,7 +76,7 @@ namespace Engine
 
 		void Bind() const;
 
-		void UnBind() const;
+		void Unbind() const;
 
 		void Destroy();
 

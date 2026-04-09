@@ -9,6 +9,7 @@ namespace Engine
 	class Layer
 	{
 	public:
+		virtual ~Layer() = default;
 		Layer();
 
 		virtual void OnAttach() = 0;

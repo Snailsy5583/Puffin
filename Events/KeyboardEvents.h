@@ -9,7 +9,7 @@
 
 namespace Engine
 {
-	class KeyboardCharTypedEvent : public Event
+	class KeyboardCharTypedEvent final : public Event
 	{
 	public:
 		explicit KeyboardCharTypedEvent(const Window &window, unsigned int cp)
@@ -17,16 +17,15 @@ namespace Engine
 		{
 		}
 
-		char GetChar() const { return m_Char; }
+		[[nodiscard]] char GetChar() const { return m_Char; }
 
 	public:
 		static EventType GetStaticType()
-		{ return EventType::KeyboardCharTyped; }
+		{ return KeyboardCharTyped; }
 		EventType GetEventType() const override
-		{ return KeyboardCharTypedEvent::GetStaticType(); }
+		{ return GetStaticType(); }
 
-		virtual const char *GetName() const override
-		{ return "KeyboardCharTyped"; }
+		const char *GetName() const override { return "KeyboardCharTyped"; }
 
 	private:
 		char m_Char;
@@ -50,7 +49,7 @@ namespace Engine
 		int m_Key, m_PhysicalKey, m_Modifiers;
 	};
 
-	class KeyboardKeyPressedEvent : public KeyboardEvent
+	class KeyboardKeyPressedEvent final : public KeyboardEvent
 	{
 	public:
 		KeyboardKeyPressedEvent(const Window &window,
@@ -62,15 +61,15 @@ namespace Engine
 		}
 
 		static EventType GetStaticType()
-		{ return EventType::KeyboardKeyPressed; }
+		{ return KeyboardKeyPressed; }
 		EventType GetEventType() const override
-		{ return KeyboardKeyPressedEvent::GetStaticType(); }
+		{ return GetStaticType(); }
 
-		virtual const char *GetName() const override
+		const char *GetName() const override
 		{ return "KeyboardKeyPressed"; }
 	};
 
-	class KeyboardKeyReleasedEvent : public KeyboardEvent
+	class KeyboardKeyReleasedEvent final : public KeyboardEvent
 	{
 	public:
 		KeyboardKeyReleasedEvent(const Window &window,
@@ -82,15 +81,15 @@ namespace Engine
 		}
 
 		static EventType GetStaticType()
-		{ return EventType::KeyboardKeyReleased; }
+		{ return KeyboardKeyReleased; }
 		EventType GetEventType() const override
-		{ return KeyboardKeyReleasedEvent::GetStaticType(); }
+		{ return GetStaticType(); }
 
-		virtual const char *GetName() const override
+		const char *GetName() const override
 		{ return "KeyboardKeyReleased"; }
 	};
 
-	class KeyboardKeyRepeatedEvent : public KeyboardEvent
+	class KeyboardKeyRepeatedEvent final : public KeyboardEvent
 	{
 	public:
 		KeyboardKeyRepeatedEvent(const Window &window,
@@ -102,11 +101,11 @@ namespace Engine
 		}
 
 		static EventType GetStaticType()
-		{ return EventType::KeyboardKeyRepeated; }
+		{ return KeyboardKeyRepeated; }
 		EventType GetEventType() const override
-		{ return KeyboardKeyRepeatedEvent::GetStaticType(); }
+		{ return GetStaticType(); }
 
-		virtual const char *GetName() const override
+		const char *GetName() const override
 		{ return "KeyboardKeyRepeated"; }
 	};
 

@@ -3,7 +3,7 @@
 
 #include "Renderer.h"
 
-#include "OBJ_Loader.h"
+#include "../../vendor/OBJLoader/OBJ_Loader.h"
 
 namespace Engine
 {
@@ -23,7 +23,7 @@ namespace Engine
 		glBindVertexArray(obj.vao);
 
 		constexpr int stride =
-			(sizeof(glm::vec3) + sizeof(glm::vec3) + sizeof(glm::vec2));
+			sizeof(glm::vec3) + sizeof(glm::vec3) + sizeof(glm::vec2);
 		GLenum usage;
 		switch (mesh.usage) {
 		case Mesh::Dynamic: usage = GL_DYNAMIC_DRAW; break;
@@ -33,17 +33,11 @@ namespace Engine
 
 		glGenBuffers(1, &obj.vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, obj.vbo);
-		glBufferData(GL_ARRAY_BUFFER,
-					 obj.bufferSize,
-					 mesh.GetAggrVertexData(),
-					 usage);
+		glBufferData(
+			GL_ARRAY_BUFFER, obj.bufferSize, mesh.GetAggrVertexData(), usage);
 
-		glVertexAttribPointer(0,
-							  3,
-							  GL_FLOAT,
-							  GL_FALSE,
-							  stride,
-							  (void *) nullptr);
+		glVertexAttribPointer(
+			0, 3, GL_FLOAT, GL_FALSE, stride, (void *) nullptr);
 		glVertexAttribPointer(1,
 							  3,
 							  GL_FLOAT,
@@ -74,9 +68,7 @@ namespace Engine
 		return obj;
 	}
 
-	Mesh Renderer::GenQuad(glm::vec3 pos,
-						   const float sideLen,
-						   Engine::Shader *shader)
+	Mesh Renderer::GenQuad(glm::vec3 pos, const float sideLen, Shader *shader)
 	{ return GenQuad(pos, glm::vec2(sideLen, sideLen), shader); }
 
 	Mesh
@@ -87,18 +79,19 @@ namespace Engine
 
 		for (int row = 0; row < len; row++) {
 			glm::vec3 vert;
-			vert.x = (m_QuadVerts[(row * 5) + 0] * size.x) + pos.x;
-			vert.y = (m_QuadVerts[(row * 5) + 1] * size.y) + pos.y;
-			vert.z = m_QuadVerts[(row * 5) + 2] + pos.z;
+			vert.x = m_QuadVerts[row * 5 + 0] * size.x + pos.x;
+			vert.y = (m_QuadVerts[row * 5 + 1] * size.y) + pos.y;
+			vert.z = m_QuadVerts[row * 5 + 2] + pos.z;
 
-			glm::vec2 texCoord {m_QuadVerts[(row * 5) + 3],
-								m_QuadVerts[(row * 5) + 4]};
+			glm::vec2 texCoord {m_QuadVerts[row * 5 + 3],
+								m_QuadVerts[row * 5 + 4]};
 
 			mesh.vertices.push_back(vert);
 			mesh.texCoords.push_back(texCoord);
-			mesh.normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+			mesh.normals.emplace_back(0.0f, 0.0f, 1.0f);
 		}
-		for (unsigned int ind : m_QuadIndices) mesh.indices.push_back(ind);
+		for (unsigned int ind : m_QuadIndices)
+			mesh.indices.push_back(ind);
 
 		mesh.renderObj = GenRendererObj(mesh, shader);
 		mesh.UpdateMesh();
@@ -117,10 +110,8 @@ namespace Engine
 
 		glBindVertexArray(obj.vao);
 		glBindBuffer(GL_ARRAY_BUFFER, obj.vbo);
-		glBufferData(GL_ARRAY_BUFFER,
-					 obj.bufferSize,
-					 mesh.GetAggrVertexData(),
-					 usage);
+		glBufferData(
+			GL_ARRAY_BUFFER, obj.bufferSize, mesh.GetAggrVertexData(), usage);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj.ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
@@ -142,16 +133,16 @@ namespace Engine
 
 		for (int row = 0; row < 6; row++) {
 			// x
-			verts[(row * 5) + 0] =
+			verts[row * 5 + 0] =
 				(m_QuadVerts[(row * 5) + 0] * size.x) + newPos.x;
 			// y
-			verts[(row * 5) + 1] =
+			verts[row * 5 + 1] =
 				(m_QuadVerts[(row * 5) + 1] * size.y) + newPos.y;
 			// z
-			verts[(row * 5) + 2] = m_QuadVerts[(row * 5) + 0] + newPos.z;
+			verts[row * 5 + 2] = m_QuadVerts[(row * 5) + 0] + newPos.z;
 
 			for (int col = 3; col < 5; col++)
-				verts[(row * 5) + col] = m_QuadVerts[(row * 5) + col];
+				verts[row * 5 + col] = m_QuadVerts[row * 5 + col];
 		}
 
 		// update vbo
@@ -164,10 +155,10 @@ namespace Engine
 		glDisableVertexAttribArray(0);
 	}
 
-	void Renderer::DeleteQuad(const RenderObject &obj)
+	void Renderer::DeleteQuad(const RenderObject &object)
 	{
-		glDeleteBuffers(1, &obj.vbo);
-		glDeleteVertexArrays(1, &obj.vao);
+		glDeleteBuffers(1, &object.vbo);
+		glDeleteVertexArrays(1, &object.vao);
 	}
 
 	void Renderer::SubmitObject(const Mesh &mesh)
@@ -186,7 +177,7 @@ namespace Engine
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		obj.shader->UnBind();
+		obj.shader->Unbind();
 	}
 
 	void Renderer::SubmitObject(const Camera &camera, const Mesh &mesh)
@@ -198,16 +189,16 @@ namespace Engine
 
 		SubmitObject(mesh);
 
-		mesh.renderObj.shader->UnBind();
+		mesh.renderObj.shader->Unbind();
 	}
 
-	float *Renderer::GetVertices(const RenderObject &obj)
+	std::vector<float> Renderer::GetVertices(const RenderObject &obj)
 	{
 		glBindVertexArray(obj.vao);
 		glBindBuffer(GL_ARRAY_BUFFER, obj.vbo);
 
-		float *data = nullptr;
-		glGetBufferSubData(GL_ARRAY_BUFFER, 0, obj.bufferSize, data);
+		std::vector<float> data(obj.bufferSize);
+		glGetBufferSubData(GL_ARRAY_BUFFER, 0, obj.bufferSize, data.data());
 
 		return data;
 	}
@@ -218,14 +209,12 @@ namespace Engine
 		objl::Loader loader;
 		loader.LoadFile(path);
 		for (auto vert : loader.LoadedVertices) {
-			mesh.vertices.emplace_back(vert.Position.X,
-									   vert.Position.Y,
-									   vert.Position.Z);
+			mesh.vertices.emplace_back(
+				vert.Position.X, vert.Position.Y, vert.Position.Z);
 			mesh.texCoords.emplace_back(vert.TextureCoordinate.X,
 										vert.TextureCoordinate.Y);
-			mesh.normals.emplace_back(vert.Normal.X,
-									  vert.Normal.Y,
-									  vert.Normal.Z);
+			mesh.normals.emplace_back(
+				vert.Normal.X, vert.Normal.Y, vert.Normal.Z);
 		}
 		for (auto ind : loader.LoadedIndices) {
 			mesh.indices.emplace_back(ind);

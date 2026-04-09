@@ -9,14 +9,13 @@ namespace Engine
 	class WindowClosedEvent : public Event
 	{
 	public:
-		WindowClosedEvent(const Window &window) : Event(window) {}
+		WindowClosedEvent(const Window &window) : Event(window) { }
 
-		static EventType GetStaticType() { return EventType::WindowClosed; }
+		static EventType GetStaticType() { return WindowClosed; }
 
-		virtual EventType GetEventType() const override
-		{ return WindowClosedEvent::GetStaticType(); }
+		EventType GetEventType() const override { return GetStaticType(); }
 
-		virtual const char *GetName() const { return "WindowClosed"; }
+		const char *GetName() const override { return "WindowClosed"; }
 	};
 
 	class WindowResizedEvent : public Event
@@ -27,16 +26,15 @@ namespace Engine
 		{
 		}
 
-		static EventType GetStaticType() { return EventType::WindowResized; }
+		static EventType GetStaticType() { return WindowResized; }
 
-		virtual EventType GetEventType() const override
-		{ return WindowResizedEvent::GetStaticType(); }
+		EventType GetEventType() const override { return GetStaticType(); }
 
-		virtual const char *GetName() const { return "WindowResized"; }
+		const char *GetName() const override { return "WindowResized"; }
 
-		int GetWidth() const { return m_Width; }
+		[[nodiscard]] int GetWidth() const { return m_Width; }
 
-		int GetHeight() const { return m_Height; }
+		[[nodiscard]] int GetHeight() const { return m_Height; }
 
 	private:
 		int m_Width, m_Height;

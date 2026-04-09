@@ -8,18 +8,14 @@
 namespace Engine
 {
 
-	Application::Application(unsigned int width,
-							 unsigned int height,
-							 const char *title)
+	Application::Application(int width, int height, const char *title)
 	{
 		m_DeltaTime = 1 / 60.f;
-		if (!glfwInit()) std::cout << "GLFW INIT FAILED\n";
+		if (!glfwInit())
+			std::cout << "GLFW INIT FAILED\n";
 
-		m_MainWindow =
-			new Engine::Window(width,
-							   height,
-							   title,
-							   BIND_EVENT_FUNC(Application::OnEvent, this));
+		m_MainWindow = new Window(
+			width, height, title, BIND_EVENT_FUNC(Application::OnEvent, this));
 		// m_MainWindow = std::make_unique<Engine::Window>(
 		//  width, height, title, BIND_EVENT_FUNC(Application::OnEvent, this));
 		if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -31,11 +27,11 @@ namespace Engine
 	Application::Application(const char *title)
 	{
 		m_DeltaTime = 1 / 60.f;
-		if (!glfwInit()) std::cout << "GLFW INIT FAILED\n";
+		if (!glfwInit())
+			std::cout << "GLFW INIT FAILED\n";
 
 		m_MainWindow =
-			new Engine::Window(title,
-							   BIND_EVENT_FUNC(Application::OnEvent, this));
+			new Window(title, BIND_EVENT_FUNC(Application::OnEvent, this));
 		// m_MainWindow = std::make_unique<Engine::Window>(
 		//  width, height, title, BIND_EVENT_FUNC(Application::OnEvent, this));
 		if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -54,40 +50,43 @@ namespace Engine
 		while (!m_MainWindow->GetShouldCloseWindow()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			PollEvents();
 			Update(m_DeltaTime);
+
+			// swap buffers
 			m_MainWindow->Update();
 
 			m_DeltaTime =
-				((float) std::chrono::duration_cast<std::chrono::microseconds>(
-					 std::chrono::steady_clock::now() - m_LastFrame)
-					 .count()) /
+				(float) std::chrono::duration_cast<std::chrono::microseconds>(
+					std::chrono::steady_clock::now() - m_LastFrame)
+					.count() /
 				1000000.f;
 
 			m_LastFrame = std::chrono::steady_clock::now();
 		}
 	}
+	void Application::PollEvents() { glfwPollEvents(); }
 
-	bool Application::DispatchEvents(Engine::EventDispatcher &dispatcher)
+	bool Application::DispatchEvents(EventDispatcher &dispatcher)
 	{
-		if (dispatcher.Dispatch<Engine::WindowClosedEvent>(
-				BIND_EVENT_FUNC(Engine::Window::OnEvent_WindowClosed,
-								m_MainWindow)))
+		if (dispatcher.Dispatch<WindowClosedEvent>(
+				BIND_EVENT_FUNC(Window::OnEvent_WindowClosed, m_MainWindow)))
 			return true;
-		if (dispatcher.Dispatch<Engine::WindowResizedEvent>(
-				BIND_EVENT_FUNC(Engine::Window::OnEvent_WindowResize,
-								m_MainWindow)))
+		if (dispatcher.Dispatch<WindowResizedEvent>(
+				BIND_EVENT_FUNC(Window::OnEvent_WindowResize, m_MainWindow)))
 			return true;
 		return false;
 	}
 
-	void Application::OnEvent(Engine::Event &e)
+	void Application::OnEvent(Event &e)
 	{
-		Engine::EventDispatcher dispatcher(e);
+		EventDispatcher dispatcher(e);
 
-		if (DispatchEvents(dispatcher)) return;
+		if (DispatchEvents(dispatcher))
+			return;
 
 		m_LayerStack.OnEvent(e);
 	}
 
-	void Application::Update(float deltaTime) {}
+	void Application::Update(float deltaTime) { }
 }	 // namespace Engine

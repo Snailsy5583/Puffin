@@ -30,17 +30,17 @@ namespace Engine
 
 		void SetWindowCallbacks();
 
-		glm::ivec2 GetWindowSize() const;
+		[[nodiscard]] glm::ivec2 GetWindowSize() const;
 
 		void Update();
 
-		inline GLFWwindow *GetGLFWWindow() const { return m_Window; }
+		[[nodiscard]] GLFWwindow *GetGLFWWindow() const { return m_Window; }
 
-		inline std::string GetClipboard() const
+		[[nodiscard]] std::string GetClipboard() const
 		{ return glfwGetClipboardString(m_Window); }
 
-		inline void SetClipboard(std::string str) const
-		{ return glfwSetClipboardString(m_Window, str.c_str()); }
+		void SetClipboard(std::string str) const
+		{ glfwSetClipboardString(m_Window, str.c_str()); }
 
 		bool OnEvent_WindowClosed(WindowClosedEvent &e);
 

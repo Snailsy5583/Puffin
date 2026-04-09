@@ -14,6 +14,7 @@ namespace Engine
 	{
 	public:
 		enum Type { Perspective, Orthographic, Other };
+
 		Camera(Type type,
 			   glm::vec3 pos,
 			   glm::quat rot,
@@ -21,14 +22,13 @@ namespace Engine
 			   float near,
 			   float far,
 			   float fov = 90);
-		Camera(const glm::mat4 &projection, glm::vec3 pos, glm::quat rot);
 
-		glm::mat4 GetViewMatrix() const;
-		inline glm::mat4 GetProjectionMatrix() const { return m_Projection; }
+		[[nodiscard]] glm::mat4 GetViewMatrix() const;
+		[[nodiscard]] glm::mat4 GetProjectionMatrix() const { return m_Projection; }
 
 	public:
-		inline glm::vec3 &GetPosition() { return m_Position; }
-		inline glm::quat &GetRotation() { return m_Rotation; }
+		glm::vec3 &GetPosition() { return m_Position; }
+		glm::quat &GetRotation() { return m_Rotation; }
 
 	protected:
 		Type m_ProjectionType;

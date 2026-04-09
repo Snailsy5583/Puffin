@@ -32,10 +32,11 @@ namespace Engine
 		SetUpdateCallback(std::function<void(float, GameObject *)> callback);
 
 	public:
-		inline RenderObject &GetRenderObject() { return mesh.renderObj; }
-		inline const glm::vec3 &GetPosition() const { return m_Position; }
-		inline const glm::quat &GetRotation() const { return m_Rotation; }
-		inline float GetScale() const { return m_Scale; }
+		[[nodiscard]] RenderObject &GetRenderObject() { return mesh.renderObj; }
+		[[nodiscard]] const glm::vec3 &GetPosition() const { return m_Position; }
+		[[nodiscard]] const glm::quat &GetRotation() const { return
+		    m_Rotation; }
+		[[nodiscard]] float GetScale() const { return m_Scale; }
 
 		template<class T>
 		T *TryGetComponent()

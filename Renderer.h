@@ -34,18 +34,16 @@ namespace Engine
 
 		static void DeleteQuad(const RenderObject &object);
 
-		static void SubmitObject(const Mesh &obj);
-		static void SubmitObject(const Camera &camera, const Mesh &obj);
+		static void SubmitObject(const Mesh &mesh);
+		static void SubmitObject(const Camera &camera, const Mesh &mesh);
 
-		static float *GetVertices(const RenderObject &obj);
+		static std::vector<float> GetVertices(const RenderObject &obj);
 
 		// utility function
-		static inline float *hsv2rgb(float in[4])
+		static float *hsv2rgb(float in[4])
 		{
 			in[0] *= 360;
 
-			float hh, p, q, t, ff;
-			long i;
 			static float out[4];
 
 			if (in[1] <= 0.0) {	   // < is bogus, just shuts up warnings
@@ -55,14 +53,15 @@ namespace Engine
 				out[3] = in[3];
 				return out;
 			}
-			hh = in[0];
-			if (hh >= 360.0) hh = 0.0f;
+			float hh = in[0];
+			if (hh >= 360.0)
+				hh = 0.0f;
 			hh /= 60.0f;
-			i = (long) hh;
-			ff = hh - i;
-			p = in[2] * (1.0f - in[1]);
-			q = in[2] * (1.0f - (in[1] * ff));
-			t = in[2] * (1.0f - (in[1] * (1.0f - ff)));
+			long i = (long) hh;
+			float ff = hh - i;
+			float p = in[2] * (1.0f - in[1]);
+			float q = in[2] * (1.0f - (in[1] * ff));
+			float t = in[2] * (1.0f - (in[1] * (1.0f - ff)));
 
 			switch (i) {
 			case 0:
@@ -145,7 +144,8 @@ namespace Engine
 			Renderer::UpdateVertexBuffer(*this);
 		}
 
-		const float *GetAggrVertexData() const { return m_AggrVertices.data(); }
+		[[nodiscard]] const float *GetAggrVertexData() const
+		{ return m_AggrVertices.data(); }
 
 	protected:
 		std::vector<float> m_AggrVertices {};

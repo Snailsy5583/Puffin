@@ -19,7 +19,8 @@ namespace Engine
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		if (vertShaderSource == nullptr || fragShaderSource == nullptr) return;
+		if (vertShaderSource == nullptr || fragShaderSource == nullptr)
+			return;
 
 		m_ShaderProgramID = glCreateProgram();
 
@@ -45,13 +46,13 @@ namespace Engine
 		if (!success) {
 			if (infoLogLen > 0) {
 				std::vector<char> errorLog(1024);
-				glGetProgramInfoLog(m_ShaderProgramID,
-									1024,
-									nullptr,
-									&errorLog[0]);
+				glGetProgramInfoLog(
+					m_ShaderProgramID, 1024, nullptr, &errorLog[0]);
 
 				std::stringstream logStream;
-				for (char character : errorLog) { logStream << character; }
+				for (char character : errorLog) {
+					logStream << character;
+				}
 
 				std::cout << logStream.str();
 			} else {
@@ -80,7 +81,7 @@ namespace Engine
 		std::string vertShaderSource = ReadFile(vertPath);
 		std::string fragShaderSource = ReadFile(fragPath);
 
-		return Shader(vertShaderSource.c_str(), fragShaderSource.c_str());
+		return {vertShaderSource.c_str(), fragShaderSource.c_str()};
 	}
 
 #pragma region SetUniformFuncs
@@ -89,61 +90,61 @@ namespace Engine
 	{
 		Bind();
 		glUniform1i(loc, value);
-		UnBind();
+		Unbind();
 	}
 
 	void Shader::SetUniform(int loc, bool value) const
 	{
 		Bind();
 		glUniform1i(loc, value);
-		UnBind();
+		Unbind();
 	}
 
 	void Shader::SetUniform(int loc, float value) const
 	{
 		Bind();
 		glUniform1f(loc, value);
-		UnBind();
+		Unbind();
 	}
 
 	void Shader::SetUniform(const char *name, int value) const
 	{
 		Bind();
 		glUniform1i(GetUniformLocation(name), value);
-		UnBind();
+		Unbind();
 	}
 
 	void Shader::SetUniform(const char *name, bool value) const
 	{
 		Bind();
 		glUniform1i(GetUniformLocation(name), value);
-		UnBind();
+		Unbind();
 	}
 
 	void Shader::SetUniform(const char *name, float value) const
 	{
 		Bind();
 		glUniform1f(GetUniformLocation(name), value);
-		UnBind();
+		Unbind();
 	}
 
 	void Shader::SetUniformVec(int loc, glm::vec2 value) const
 	{
 		Bind();
 		glUniform2f(loc, value.x, value.y);
-		UnBind();
+		Unbind();
 	}
 	void Shader::SetUniformVec(int loc, glm::vec3 value) const
 	{
 		Bind();
 		glUniform3f(loc, value.x, value.y, value.z);
-		UnBind();
+		Unbind();
 	}
 	void Shader::SetUniformVec(int loc, glm::vec4 value) const
 	{
 		Bind();
 		glUniform4f(loc, value.x, value.y, value.z, value.w);
-		UnBind();
+		Unbind();
 	}
 
 	void Shader::SetUniformVec(const char *name, glm::vec2 value) const
@@ -168,7 +169,7 @@ namespace Engine
 
 		glUniformMatrix4fv(loc, 1, false, &value[0][0]);
 
-		UnBind();
+		Unbind();
 	}
 
 	void Shader::SetUniformMat4(const char *name, glm::mat4 value) const
@@ -187,13 +188,17 @@ namespace Engine
 
 	void Shader::Bind() const
 	{
-		for (const Texture &tex : m_Textures) { tex.Bind(); }
+		for (const Texture &tex : m_Textures) {
+			tex.Bind();
+		}
 		glUseProgram(m_ShaderProgramID);
 	}
 
-	void Shader::UnBind() const
+	void Shader::Unbind() const
 	{
-		for (const Texture &tex : m_Textures) { tex.UnBind(); }
+		for (const Texture &tex : m_Textures) {
+			tex.Unbind();
+		}
 		glUseProgram(0);
 	}
 
@@ -202,7 +207,9 @@ namespace Engine
 	void Shader::Destroy()
 	{
 		glDeleteProgram(m_ShaderProgramID);
-		for (Texture &texture : m_Textures) { texture.Destroy(); }
+		for (Texture &texture : m_Textures) {
+			texture.Destroy();
+		}
 	}
 
 	std::string Shader::ReadFile(const char *path)
@@ -219,7 +226,9 @@ namespace Engine
 		}
 
 		std::string line;
-		while (std::getline(file, line)) { contents.append(line + "\n"); }
+		while (std::getline(file, line)) {
+			contents.append(line + "\n");
+		}
 
 		file.close();
 
@@ -240,7 +249,9 @@ namespace Engine
 
 			std::stringstream logStream;
 
-			for (char character : errorLog) { logStream << character; }
+			for (char character : errorLog) {
+				logStream << character;
+			}
 
 			std::cout << logStream.str();
 
@@ -255,7 +266,20 @@ namespace Engine
 	// Texture
 	// ////////////////////////////////////////////////////////////////////
 
-	Texture::Texture(const char *path)
+	Texture::Texture(const char *path) { InitFromPath(path); }
+	Texture::Texture(int width,
+					 int height,
+					 int channel,
+					 const unsigned char *buffer)
+	{ InitFromBuffer(width, height, channel, buffer); }
+
+	void Texture::Bind() const { glBindTexture(GL_TEXTURE_2D, m_TextureID); }
+
+	void Texture::Unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
+
+	void Texture::Destroy() { glDeleteTextures(1, &m_TextureID); }
+
+	void Texture::InitFromPath(const char *path)
 	{
 		stbi_set_flip_vertically_on_load(true);
 
@@ -263,8 +287,20 @@ namespace Engine
 		unsigned char *image =
 			stbi_load(path, &width, &height, &channels, STBI_rgb_alpha);
 
-		if (!image) { std::cout << "ERROR: Image not opened" << std::endl; }
+		if (!image) {
+			std::cout << "ERROR: Image not opened" << std::endl;
+		}
 
+		InitFromBuffer(width, height, channels, image);
+
+		stbi_image_free(image);
+	}
+
+	void Texture::InitFromBuffer(int width,
+								 int height,
+								 int channel,
+								 const unsigned char *buffer)
+	{
 		glGenTextures(1, &m_TextureID);
 		Bind();
 
@@ -281,16 +317,8 @@ namespace Engine
 					 0,
 					 GL_RGBA,
 					 GL_UNSIGNED_BYTE,
-					 image);
-		UnBind();
-
-		stbi_image_free(image);
+					 buffer);
+		Unbind();
 	}
-
-	void Texture::Bind() const { glBindTexture(GL_TEXTURE_2D, m_TextureID); }
-
-	void Texture::UnBind() const { glBindTexture(GL_TEXTURE_2D, 0); }
-
-	void Texture::Destroy() { glDeleteTextures(1, &m_TextureID); }
 
 }	 // namespace Engine

@@ -13,19 +13,21 @@ namespace Engine
 	class Application
 	{
 	public:
-		Application(unsigned int width, unsigned int height, const char *title);
+		Application(int width, int height, const char *title);
 
 		Application(const char *title);
 
-		~Application();
+		virtual ~Application();
 
 		virtual void Run();
 
+		virtual void PollEvents();
+
 		virtual void Update(float deltaTime);
 
-		virtual void OnEvent(Engine::Event &e);
+		virtual void OnEvent(Event &e);
 
-		virtual bool DispatchEvents(Engine::EventDispatcher &dispatcher);
+		virtual bool DispatchEvents(EventDispatcher &dispatcher);
 
 	protected:
 		Window *m_MainWindow;

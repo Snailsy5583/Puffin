@@ -48,13 +48,11 @@ namespace Engine
 		{
 		}
 
-		static EventType GetStaticType()
-		{ return EventType::MouseButtonPressed; }
+		static EventType GetStaticType() { return MouseButtonPressed; }
 
-		EventType GetEventType() const override
-		{ return MouseButtonPressedEvent::GetStaticType(); }
+		EventType GetEventType() const override { return GetStaticType(); }
 
-		virtual const char *GetName() const { return "MouseButtonPressed"; }
+		const char *GetName() const override { return "MouseButtonPressed"; }
 	};
 
 	class MouseButtonReleasedEvent : public MouseButtonEvent
@@ -68,13 +66,11 @@ namespace Engine
 		{
 		}
 
-		static EventType GetStaticType()
-		{ return EventType::MouseButtonReleased; }
+		static EventType GetStaticType() { return MouseButtonReleased; }
 
-		EventType GetEventType() const override
-		{ return MouseButtonReleasedEvent::GetStaticType(); }
+		EventType GetEventType() const override { return GetStaticType(); }
 
-		virtual const char *GetName() const { return "MouseButtonReleased"; }
+		const char *GetName() const override { return "MouseButtonReleased"; }
 	};
 
 	class MouseMovedEvent : public Event
@@ -85,16 +81,22 @@ namespace Engine
 		{
 		}
 
-		~MouseMovedEvent() { m_PrevMousePos = m_MousePos; }
+		~MouseMovedEvent() override { m_PrevMousePos = m_MousePos; }
 
-		static EventType GetStaticType() { return EventType::MouseMoved; }
+		static EventType GetStaticType() { return MouseMoved; }
 
-		EventType GetEventType() const override
-		{ return MouseMovedEvent::GetStaticType(); }
+		EventType GetEventType() const override { return GetStaticType(); }
 
-		virtual const char *GetName() const { return "MouseMoved"; }
+		const char *GetName() const override { return "MouseMoved"; }
 
-		void GetMousePosition(float &outX, float &outY)
+		void GetMousePixelPos(int &x, int &y) const
+		{
+			auto winSize = m_Window.GetWindowSize();
+			x = (int) ((float) winSize.x * m_MousePos.x);
+			y = (int) ((float) winSize.y * m_MousePos.y);
+		}
+
+		void GetMousePosition(float &outX, float &outY) const
 		{
 			outX = m_MousePos.x;
 			outY = m_MousePos.y;
@@ -118,10 +120,9 @@ namespace Engine
 
 		static EventType GetStaticType() { return EventType::MouseScrolled; }
 
-		EventType GetEventType() const override
-		{ return MouseScrolledEvent::GetStaticType(); }
+		EventType GetEventType() const override { return GetStaticType(); }
 
-		virtual const char *GetName() const { return "MouseScrolled"; }
+		const char *GetName() const override { return "MouseScrolled"; }
 
 		glm::vec2 GetScrollAmount() const { return m_Delta; }
 

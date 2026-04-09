@@ -6,7 +6,8 @@ namespace Engine
 {
 
 	GameObject::GameObject(Mesh mesh, glm::vec3 pos, glm::quat rot)
-		: mesh(std::move(mesh)), m_Position(pos), m_Rotation(rot)
+		: mesh(std::move(mesh)), m_Position(pos), m_Rotation(rot),
+		  m_TransformationMat {}
 	{
 	}
 
@@ -22,7 +23,8 @@ namespace Engine
 			comp->UpdateComponent(deltaTime);
 		}
 
-		if (m_UpdateCallback) m_UpdateCallback(deltaTime, this);
+		if (m_UpdateCallback)
+			m_UpdateCallback(deltaTime, this);
 	}
 
 	void GameObject::AddComponent(std::unique_ptr<Component> component)
@@ -35,23 +37,20 @@ namespace Engine
 	void GameObject::Render() const
 	{
 		mesh.renderObj.shader->SetUniformVec(
-			"pos",
-			glm::vec3 {m_Position.x, m_Position.y, m_Position.z});
+			"pos", glm::vec3 {m_Position.x, m_Position.y, m_Position.z});
 		Renderer::SubmitObject(mesh);
 	}
 
 	Quad::Quad(float sideLength, glm::vec3 pos, glm::quat rot, Shader *shader)
-		: GameObject(Renderer::GenQuad({0, 0, 0}, sideLength, shader),
-					 pos,
-					 rot),
+		: GameObject(
+			  Renderer::GenQuad({0, 0, 0}, sideLength, shader), pos, rot),
 		  m_SideLength(sideLength)
 	{
 	}
 
 	Circle::Circle(float radius, glm::vec3 pos, glm::quat rot, Shader *shader)
-		: GameObject(Renderer::GenQuad({0, 0, 0}, radius * 2, shader),
-					 pos,
-					 rot),
+		: GameObject(
+			  Renderer::GenQuad({0, 0, 0}, radius * 2, shader), pos, rot),
 		  m_Radius(radius)
 	{
 	}

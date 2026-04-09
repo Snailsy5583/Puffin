@@ -3,9 +3,9 @@
 namespace Engine
 {
 
-	Layer::Layer() {}
+	Layer::Layer() = default;
 
-	LayerStack::LayerStack() {}
+	LayerStack::LayerStack() { }
 
 	void LayerStack::Push(Layer *layer)
 	{
@@ -19,12 +19,14 @@ namespace Engine
 		m_LayerStack.pop_back();
 	}
 
-	void LayerStack::Remove(int index) {}
+	void LayerStack::Remove(int index)
+	{ m_LayerStack.erase(m_LayerStack.begin() + index); }
 
 	void LayerStack::OnEvent(Event &e)
 	{
 		for (Layer *layer : m_LayerStack)
-			if (layer->OnEvent(e)) break;
+			if (layer->OnEvent(e))
+				break;
 	}
 
 }	 // namespace Engine

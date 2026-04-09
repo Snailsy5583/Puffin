@@ -19,25 +19,18 @@ namespace Engine
 				   float far,
 				   float fov)
 		: m_ProjectionType(type), m_Position(pos), m_Rotation(rot),
-		  m_Near(near), m_Far(far)
+		  m_Projection {}, m_Near(near), m_Far(far)
 	{
 		switch (type) {
-		case Type::Perspective:
+		case Perspective:
 
 			m_Projection =
 				glm::perspective(glm::radians(fov), aspect, near, far);
 			break;
-		case Type::Orthographic:
+		case Orthographic:
 			// TODO: orthographic projection
-			break;
 		default: break;
 		}
-	}
-
-	Camera::Camera(const glm::mat4 &projection, glm::vec3 pos, glm::quat rot)
-		: m_ProjectionType(Other), m_Position(pos), m_Rotation(rot),
-		  m_Projection(projection)
-	{
 	}
 
 	glm::mat4 Camera::GetViewMatrix() const

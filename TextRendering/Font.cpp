@@ -39,7 +39,7 @@ Font::Font(const char *src, const FT_Library *FT, unsigned int size)
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		texture.UnBind();
+		texture.Unbind();
 
 		// now store character for later use
 		FontCharacter character {texture,
@@ -54,7 +54,7 @@ Font::Font(const char *src, const FT_Library *FT, unsigned int size)
 	FT_Done_Face(m_FontFace);
 }
 
-Engine::Font::~Font() {}
+Engine::Font::~Font() { }
 
 Font::FontCharacter &Font::GetChar(const char c)
 { return m_CharacterSet.at(c); }

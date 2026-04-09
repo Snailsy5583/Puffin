@@ -11,7 +11,8 @@ namespace Engine
 		Component(GameObject *owner);
 
 	public:
-		virtual void UpdateComponent(float deltaTime) {};
+		virtual ~Component() = default;
+		virtual void UpdateComponent(float deltaTime) {}
 
 	protected:
 		GameObject *m_Owner;
