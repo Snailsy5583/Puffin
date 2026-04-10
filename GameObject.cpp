@@ -6,7 +6,7 @@ namespace Engine
 {
 
 	GameObject::GameObject(Mesh mesh, glm::vec3 pos, glm::quat rot)
-		: mesh(std::move(mesh)), m_Position(pos), m_Rotation(rot),
+		: m_Mesh(std::move(mesh)), m_Position(pos), m_Rotation(rot),
 		  m_TransformationMat {}
 	{
 	}
@@ -36,9 +36,9 @@ namespace Engine
 
 	void GameObject::Render() const
 	{
-		mesh.renderObj.shader->SetUniformVec(
+		m_Mesh.p_RenderObject.shader->SetUniformVec(
 			"pos", glm::vec3 {m_Position.x, m_Position.y, m_Position.z});
-		Renderer::SubmitObject(mesh);
+		Renderer::SubmitObject(m_Mesh);
 	}
 
 	Quad::Quad(float sideLength, glm::vec3 pos, glm::quat rot, Shader *shader)

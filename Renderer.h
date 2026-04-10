@@ -8,7 +8,6 @@
 
 namespace Engine
 {
-	struct Mesh;
 	struct RenderObject {
 		unsigned int vao {};
 		unsigned int vbo {};
@@ -17,11 +16,11 @@ namespace Engine
 		Shader *shader;	   // doesn't take ownership of shader
 	};
 
+	class Mesh;
+
 	class Renderer
 	{
 	public:
-		static RenderObject GenRendererObj(const Mesh &mesh, Shader *shader);
-
 		static Mesh GenQuad(glm::vec3 pos, float sideLen, Shader *shader);
 		static Mesh GenQuad(glm::vec3 pos, glm::vec2 size, Shader *shader);
 
@@ -106,48 +105,4 @@ namespace Engine
 		const static unsigned int m_QuadIndices[];
 	};
 
-	struct Mesh {
-		static Mesh ImportFromOBJ(std::string path, Shader *shader);
-
-		enum Usage { none = 0, Static, Dynamic, Stream };
-		Usage usage {};
-
-		// vbo
-		std::vector<glm::vec3> vertices {};
-		std::vector<glm::vec3> normals {};
-		std::vector<glm::vec2> texCoords {};
-
-		std::vector<unsigned int> indices {};
-
-		RenderObject renderObj {};
-
-		void UpdateMesh()
-		{
-			m_AggrVertices.clear();
-
-			constexpr int stride =
-				(sizeof(glm::vec3) + sizeof(glm::vec3) + sizeof(glm::vec2));
-
-			renderObj.bufferSize = vertices.size() * stride;
-
-			for (int i = 0; i < vertices.size(); i++) {
-				m_AggrVertices.emplace_back(vertices[i].x);
-				m_AggrVertices.emplace_back(vertices[i].y);
-				m_AggrVertices.emplace_back(vertices[i].z);
-				m_AggrVertices.emplace_back(normals[i].x);
-				m_AggrVertices.emplace_back(normals[i].y);
-				m_AggrVertices.emplace_back(normals[i].z);
-				m_AggrVertices.emplace_back(texCoords[i].x);
-				m_AggrVertices.emplace_back(texCoords[i].y);
-			}
-
-			Renderer::UpdateVertexBuffer(*this);
-		}
-
-		[[nodiscard]] const float *GetAggrVertexData() const
-		{ return m_AggrVertices.data(); }
-
-	protected:
-		std::vector<float> m_AggrVertices {};
-	};
 }	 // namespace Engine

@@ -1,6 +1,7 @@
 #include "glad/glad.h"
 #include <iostream>
 
+#include "Mesh.h"
 #include "Renderer.h"
 
 #include "../../vendor/OBJLoader/OBJ_Loader.h"
@@ -15,58 +16,6 @@ namespace Engine
 	};
 	const unsigned int Renderer::m_QuadIndices[] = {0, 1, 2, 3, 2, 1};
 
-	RenderObject Renderer::GenRendererObj(const Mesh &mesh, Shader *shader)
-	{
-		RenderObject obj = {0, 0, 0, 0, shader};
-
-		glGenVertexArrays(1, &obj.vao);
-		glBindVertexArray(obj.vao);
-
-		constexpr int stride =
-			sizeof(glm::vec3) + sizeof(glm::vec3) + sizeof(glm::vec2);
-		GLenum usage;
-		switch (mesh.usage) {
-		case Mesh::Dynamic: usage = GL_DYNAMIC_DRAW; break;
-		case Mesh::Stream: usage = GL_STREAM_DRAW; break;
-		default: usage = GL_STATIC_DRAW; break;
-		}
-
-		glGenBuffers(1, &obj.vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, obj.vbo);
-		glBufferData(
-			GL_ARRAY_BUFFER, obj.bufferSize, mesh.GetAggrVertexData(), usage);
-
-		glVertexAttribPointer(
-			0, 3, GL_FLOAT, GL_FALSE, stride, (void *) nullptr);
-		glVertexAttribPointer(1,
-							  3,
-							  GL_FLOAT,
-							  GL_FALSE,
-							  5 * sizeof(float),
-							  (void *) (3 * sizeof(float)));
-		glVertexAttribPointer(2,
-							  2,
-							  GL_FLOAT,
-							  GL_FALSE,
-							  5 * sizeof(float),
-							  (void *) (3 * sizeof(float)));
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-
-		glGenBuffers(1, &obj.ebo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj.ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-					 mesh.indices.size() * sizeof(int),
-					 mesh.indices.data(),
-					 usage);
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-		return obj;
-	}
 
 	Mesh Renderer::GenQuad(glm::vec3 pos, const float sideLen, Shader *shader)
 	{ return GenQuad(pos, glm::vec2(sideLen, sideLen), shader); }
@@ -74,7 +23,7 @@ namespace Engine
 	Mesh
 	Renderer::GenQuad(const glm::vec3 pos, const glm::vec2 size, Shader *shader)
 	{
-		Mesh mesh;
+		Mesh mesh(shader);
 		int len = sizeof(m_QuadVerts) / (sizeof(float) * 5);
 
 		for (int row = 0; row < len; row++) {
@@ -86,23 +35,20 @@ namespace Engine
 			glm::vec2 texCoord {m_QuadVerts[row * 5 + 3],
 								m_QuadVerts[row * 5 + 4]};
 
-			mesh.vertices.push_back(vert);
-			mesh.texCoords.push_back(texCoord);
-			mesh.normals.emplace_back(0.0f, 0.0f, 1.0f);
+			mesh.p_Vertices.push_back({vert, glm::vec3 {0, 0, 0}, texCoord});
 		}
 		for (unsigned int ind : m_QuadIndices)
-			mesh.indices.push_back(ind);
+			mesh.p_Indices.push_back(ind);
 
-		mesh.renderObj = GenRendererObj(mesh, shader);
 		mesh.UpdateMesh();
 		return mesh;
 	}
 
 	void Renderer::UpdateVertexBuffer(const Mesh &mesh)
 	{
-		const auto obj = mesh.renderObj;
+		const auto obj = mesh.p_RenderObject;
 		GLenum usage;
-		switch (mesh.usage) {
+		switch (mesh.p_Usage) {
 		case Mesh::Dynamic: usage = GL_DYNAMIC_DRAW; break;
 		case Mesh::Stream: usage = GL_STREAM_DRAW; break;
 		default: usage = GL_STATIC_DRAW; break;
@@ -115,8 +61,8 @@ namespace Engine
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj.ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-					 mesh.indices.size() * sizeof(int),
-					 mesh.indices.data(),
+					 mesh.p_Indices.size() * sizeof(int),
+					 mesh.p_Indices.data(),
 					 usage);
 
 		glBindVertexArray(0);
@@ -163,14 +109,14 @@ namespace Engine
 
 	void Renderer::SubmitObject(const Mesh &mesh)
 	{
-		auto obj = mesh.renderObj;
+		auto obj = mesh.p_RenderObject;
 		glBindVertexArray(obj.vao);
 		glBindBuffer(GL_ARRAY_BUFFER, obj.vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj.ebo);
 		obj.shader->Bind();
 
 		glDrawElements(GL_TRIANGLES,
-					   mesh.indices.size() * sizeof(unsigned),
+					   mesh.p_Indices.size() * sizeof(unsigned),
 					   GL_UNSIGNED_INT,
 					   nullptr);
 
@@ -182,14 +128,15 @@ namespace Engine
 
 	void Renderer::SubmitObject(const Camera &camera, const Mesh &mesh)
 	{
-		mesh.renderObj.shader->Bind();
-		mesh.renderObj.shader->SetUniformMat4("view", camera.GetViewMatrix());
-		mesh.renderObj.shader->SetUniformMat4("projection",
-											  camera.GetProjectionMatrix());
+		mesh.p_RenderObject.shader->Bind();
+		mesh.p_RenderObject.shader->SetUniformMat4("view",
+												   camera.GetViewMatrix());
+		mesh.p_RenderObject.shader->SetUniformMat4(
+			"projection", camera.GetProjectionMatrix());
 
 		SubmitObject(mesh);
 
-		mesh.renderObj.shader->Unbind();
+		mesh.p_RenderObject.shader->Unbind();
 	}
 
 	std::vector<float> Renderer::GetVertices(const RenderObject &obj)
@@ -201,26 +148,5 @@ namespace Engine
 		glGetBufferSubData(GL_ARRAY_BUFFER, 0, obj.bufferSize, data.data());
 
 		return data;
-	}
-
-	Mesh Mesh::ImportFromOBJ(std::string path, Shader *shader)
-	{
-		Mesh mesh;
-		objl::Loader loader;
-		loader.LoadFile(path);
-		for (auto vert : loader.LoadedVertices) {
-			mesh.vertices.emplace_back(
-				vert.Position.X, vert.Position.Y, vert.Position.Z);
-			mesh.texCoords.emplace_back(vert.TextureCoordinate.X,
-										vert.TextureCoordinate.Y);
-			mesh.normals.emplace_back(
-				vert.Normal.X, vert.Normal.Y, vert.Normal.Z);
-		}
-		for (auto ind : loader.LoadedIndices) {
-			mesh.indices.emplace_back(ind);
-		}
-		mesh.renderObj = Renderer::GenRendererObj(mesh, shader);
-		mesh.UpdateMesh();
-		return mesh;
 	}
 }	 // namespace Engine

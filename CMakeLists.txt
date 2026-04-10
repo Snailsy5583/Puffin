@@ -31,11 +31,15 @@ set(__src__Events
 set(__src__FontRendering
         #        TextRendering/Font.h TextRendering/Font.cpp
         #        TextRendering/FontRenderer.h TextRendering/FontRenderer.cpp
-        Events/KeyboardEvents.h)
+        Events/KeyboardEvents.h
+        Mesh.cpp
+        Mesh.h)
 
 add_library(${PROJECT_NAME}
         #        ${__ImGui__}
         ${__src} ${__src__Events} ${__src__FontRendering})
+
+add_definitions(-DGLFW_INCLUDE_NONE)
 
 ################################# linking ######################################
 target_link_libraries(${PROJECT_NAME} PRIVATE

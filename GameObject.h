@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "Component.h"
+#include "Mesh.h"
 #include "Renderer.h"
 #include "glm/detail/type_quat.hpp"
 
@@ -32,10 +33,12 @@ namespace Engine
 		SetUpdateCallback(std::function<void(float, GameObject *)> callback);
 
 	public:
-		[[nodiscard]] RenderObject &GetRenderObject() { return mesh.renderObj; }
-		[[nodiscard]] const glm::vec3 &GetPosition() const { return m_Position; }
-		[[nodiscard]] const glm::quat &GetRotation() const { return
-		    m_Rotation; }
+		[[nodiscard]] RenderObject &GetRenderObject()
+		{ return m_Mesh.p_RenderObject; }
+		[[nodiscard]] const glm::vec3 &GetPosition() const
+		{ return m_Position; }
+		[[nodiscard]] const glm::quat &GetRotation() const
+		{ return m_Rotation; }
 		[[nodiscard]] float GetScale() const { return m_Scale; }
 
 		template<class T>
@@ -43,14 +46,15 @@ namespace Engine
 		{
 			for (auto &comp : m_Components) {
 				T *specifiedComp = dynamic_cast<T *>(comp.get());
-				if (specifiedComp) return specifiedComp;
+				if (specifiedComp)
+					return specifiedComp;
 			}
 			return nullptr;
 		}
 
-	protected:
-		Mesh mesh;
+		Mesh m_Mesh;
 
+	protected:
 		std::vector<std::unique_ptr<Component>> m_Components;
 
 		std::function<void(float, GameObject *)> m_UpdateCallback;

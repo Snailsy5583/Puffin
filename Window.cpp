@@ -1,5 +1,4 @@
 #include "Window.h"
-// #include "glad/glad.h"
 
 #include "Events/Events.h"
 #include "Events/KeyboardEvents.h"
